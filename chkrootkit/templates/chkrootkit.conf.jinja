@@ -1,0 +1,5 @@
+{%- from "chkrootkit/map.jinja" import config with context -%}
+RUN_DAILY="{{ config.get('run_daily', 'true') }}"
+RUN_DAILY_OPTS="{{ config.get('run_daily_opts', ['-q'])|join(' ') }}"
+DIFF_MODE="{{ config.get('diff_mode', 'true') }}" # garde un /var/cache/chkrootkit/log.old pour comparer la prochaine fois
+REPORT_MAIL={{ config.get('report_mail', 'root@localhost') }}

@@ -1,0 +1,17 @@
+{% set chkrootkit = salt['grains.filter_by']({
+    'Debian': {
+        'pkg': 'chkrootkit',
+        'config_dir': '/etc/chkrootkit',
+        'config': '/etc/chkrootkit/chkrootkit.conf',
+        'exclude_file': '/etc/chkrootkit/exclude.list',
+        'log_dir': '/var/log/chkrootkit',
+    },
+}, grain='os', default='Debian', merge=salt['pillar.get']('chkrootkit:lookup')) %}
+
+{% set config = salt['grains.filter_by']({
+    'default': {
+        'var1': 'tata',
+        'var2': 'tata2',
+        'var3': 'tata3',
+    },
+}, default='default', merge=salt['pillar.get']('chkrootkit:config')) %}

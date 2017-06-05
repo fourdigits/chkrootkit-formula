@@ -1,0 +1,41 @@
+{%- from "chkrootkit/map.jinja" import chkrootkit with context -%}
+#!/bin/bash
+CHKROOTKIT=/usr/sbin/chkrootkit
+CONF={{ chkrootkit.get('config') }}
+EXCLUDE={{ chkrootkit.get('exclude_file') }}
+MAIL=$(which mail)
+LOG_DIR={{ chkrootkit.get('log_dir') }}
+
+if [ ! -x $CHKROOTKIT ]; then
+  exit 0
+fi
+
+if [ -f $CONF ]; then
+    . $CONF
+fi
+
+if [ "$RUN_DAILY" = "true" ]; then
+    if [ "$DIFF_MODE" = "true" ]; then
+        $CHKROOTKIT $RUN_DAILY_OPTS > $LOG_DIR/log.old 2>&1
+    else
+        $CHKROOTKIT $RUN_DAILY_OPTS
+    fi
+fi
+# Mail alert
+# No future for empty lines
+cat $LOG_DIR/log.old | grep -v -e '^$' > $LOG_DIR/log.alert
+# We drop lines listed in $EXCLUDEF by suppress them line by line
+while read LINE
+do
+   # unlike Debian, writing the cat output to the same file does'nt seem to work on CentOS
+   # We use a temporary file a2
+   cat $LOG_DIR/log.alert | grep -v "$LINE" > $LOG_DIR/log.a2
+   mv $LOG_DIR/log.a2 $LOG_DIR/log.alert
+done < $EXCLUDE
+# If some alerts stay in file, we cry
+if [ -s $LOG_DIR/log.alert ]
+then
+        (echo "CHKROOTKIT Alert :"
+         cat $LOG_DIR/log.alert
+        ) | $MAIL -s 'chkrootkit Daily Run' $REPORT_MAIL
+fi

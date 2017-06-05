@@ -1,0 +1,4 @@
+{%- from "chkrootkit/map.jinja" import config with context -%}
+{%- for exclude in config.get('exclude_list', []) %}
+{{ exclude }}
+{%- endfor %}

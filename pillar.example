@@ -1,0 +1,6 @@
+chkrootkit:
+  config:
+    report_mail: root@localhost
+    exclude_list:
+      - '/usr/lib/pymodules/python2.7/.path'
+      - 'eth0: PACKET SNIFFER(/sbin/dhclient[449])'
