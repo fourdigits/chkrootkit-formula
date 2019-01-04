@@ -1,8 +1,8 @@
 {% set chkrootkit = salt['grains.filter_by']({
     'Debian': {
         'pkg': 'chkrootkit',
-        'config_dir': '/etc/chkrootkit',
-        'config': '/etc/chkrootkit/chkrootkit.conf',
+        'config_dir': '/etc',
+        'config': '/etc/chkrootkit.conf',
         'exclude_file': '/etc/chkrootkit/exclude.list',
         'log_dir': '/var/log/chkrootkit',
     },
